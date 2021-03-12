@@ -74,13 +74,10 @@ func Evaluate(expr string) (float64, error) {
 	var a float64
 	var b float64
 	var op string
-	n, err := fmt.Sscanf(expr, "%f%s%f\n", &a, &op, &b)
+	_, err := fmt.Sscanf(expr, "%f%s%f\n", &a, &op, &b)
 
 	if err != nil {
 		return 0, fmt.Errorf("%s Unexpected error %s", expr, err)
-	}
-	if n > 3 {
-		return 0, fmt.Errorf("%s Invalid expression. Wrong number or argument %d", expr, n)
 	}
 
 	switch operation := op; operation {
