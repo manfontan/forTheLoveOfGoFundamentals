@@ -5,9 +5,6 @@ package calculator
 import (
 	"fmt"
 	"math"
-	"regexp"
-	"strconv"
-	"strings"
 )
 
 // Add takes two numbers and returns the
@@ -74,25 +71,19 @@ func Sqrt(a float64) (float64, error) {
 // followed by an aritmentic operator *,+,/,- followed by one or more spaces
 // followed by a floating point value are accepted.
 func Evaluate(expr string) (float64, error) {
-	space := regexp.MustCompile(`\s+`)
-	trim := strings.TrimSpace(space.ReplaceAllString(expr, " "))
-	input := strings.Split(trim, " ")
-	if len(input) > 3 {
-		return 0, fmt.Errorf("Too many arguments %s ", expr)
-	}
-	if len(input) < 3 {
-		return 0, fmt.Errorf("Too little arguments, uses spaces as separators %s ", expr)
-	}
-	a, err := strconv.ParseFloat(input[0], 64)
+	var a float64
+	var b float64
+	var op string
+	n, err := fmt.Sscanf(expr, "%f%s%f\n", &a, &op, &b)
+
 	if err != nil {
-		return 0, fmt.Errorf("%s Invalid value %s", expr, input[0])
+		return 0, fmt.Errorf("%s Unexpected error %s", expr, err)
 	}
-	b, err := strconv.ParseFloat(input[2], 64)
-	if err != nil {
-		return 0, fmt.Errorf("%s Invalid value %s", expr, input[2])
+	if n > 3 {
+		return 0, fmt.Errorf("%s Invalid expression. Wrong number or argument %d", expr, n)
 	}
 
-	switch op := input[1]; op {
+	switch operation := op; operation {
 	case "+":
 		return Add(a, b), nil
 	case "-":
